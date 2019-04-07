@@ -5,17 +5,12 @@
  */
 package ch.heigvd.cc.downfall;
 
-import javax.swing.JFrame;
 
-/**
- *
- * @author Edouard
- */
-public class playerFrame extends JFrame {
+public class DownFallGame {
+
    
-   playerFrame(int height, int width){
-        super();
-        setSize(width, height);
-        setVisible(true);
+
+   public static void main(String[] args) {
+      Partie partie = new Partie();
    }
 }

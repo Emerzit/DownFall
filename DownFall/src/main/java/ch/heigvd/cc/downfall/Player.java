@@ -9,6 +9,6 @@ package ch.heigvd.cc.downfall;
  *
  * @author Edouard
  */
-public class player {
+public class Player {
    
 }
