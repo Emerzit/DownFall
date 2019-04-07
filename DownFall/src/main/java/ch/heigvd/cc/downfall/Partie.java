@@ -5,6 +5,7 @@
  */
 package ch.heigvd.cc.downfall;
 import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.*;
 
 /**
@@ -14,6 +15,8 @@ import javax.swing.*;
 public class Partie extends JFrame {
    private static final int width = 600;
    private static final int height = 400;
+   //private ArrayList<ClientListener> listeners = new ArrayList<>();
+   
    Partie(){
       super("DownFall");
       setSize(width, height);
