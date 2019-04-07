@@ -15,9 +15,17 @@ import java.awt.*;
 public class PlayerPanel extends JPanel{
    
    Color bgcolor;
+   static final int playerHeight = 50;
+   static final int playerWidth = 25;
    
-   PlayerPanel(Color bgcolor){
+   PlayerPanel(int pPosY, int pPosX, int width, int height, Color bgcolor){
+      setBounds(pPosY, pPosX, width, height);
       this.bgcolor = bgcolor;
+      Player player = new Player();
+      add(player);
+      // création et posiition du joueur au milieur de sa zone
+      player.setBounds(width/2 - playerWidth/2 ,height/2 - playerHeight/2,playerWidth,playerWidth);
+      setLayout(new BorderLayout());
       repaint();
    }
    
@@ -25,7 +33,5 @@ public class PlayerPanel extends JPanel{
    public void paintComponent(Graphics g){
       super.paintComponent(g);
       setBackground(bgcolor);
-      g.setColor(Color.BLACK);
-      g.fillRect(10, 10, 50, 50);
    }
 }

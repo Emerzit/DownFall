@@ -5,21 +5,10 @@
  */
 package ch.heigvd.cc.downfall;
 
-import java.awt.*;
-import javax.swing.JPanel;
-
 /**
  *
  * @author Edouard
  */
-public class Player  extends JPanel{
-   Player(){
+public class PrimaryWeapon extends Weapons {
    
-   }
-   
-   @Override
-   public void paintComponent(Graphics g){
-      super.paintComponent(g);
-      setBackground(Color.BLACK);
-   }
 }
