@@ -34,4 +34,8 @@ public class PlayerPanel extends JPanel{
       super.paintComponent(g);
       setBackground(bgcolor);
    }
+   
+   void moveUp(){
+   
+   }
 }
