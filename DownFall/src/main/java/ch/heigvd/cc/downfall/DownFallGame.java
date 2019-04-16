@@ -10,7 +10,8 @@ public class DownFallGame {
 
    
 
-   public static void main(String[] args) {
+/*   public static void main(String[] args) {
       Partie partie = new Partie();
    }
+   */
 }
