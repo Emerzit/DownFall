@@ -3,9 +3,9 @@ package ch.heigvd.cc.downfall;
 import javax.swing.*;
 
 public class PlayerPannel extends JPanel {
-    Player player;
+    PlayerEnvir player;
 
-    PlayerPannel(Player player){
+    PlayerPannel(PlayerEnvir player){
         this.player = player;
     }
 }
