@@ -1,6 +1,6 @@
 package ch.heigvd.cc.downfall.TileMap;
 
-import ch.heigvd.cc.downfall.GamePannel;
+import ch.heigvd.cc.downfall.PlayerPannel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -29,8 +29,8 @@ public class Background {
     }
 
     public void setPosition(double x, double y) {
-        this.x = (x*moveScale) % GamePannel.WIDTH;
-        this.y = (y*moveScale) % GamePannel.HEIGHT;
+        this.x = (x*moveScale) % PlayerPannel.WIDTH;
+        this.y = (y*moveScale) % PlayerPannel.HEIGHT;
     }
 
     public void setVector(double dx, double dy){
@@ -48,10 +48,10 @@ public class Background {
 
         // TODO :: do the same for y  : vertical movement
         if(x<0){
-            g.drawImage(image,(int)x + GamePannel.WIDTH, (int)y, null);
+            g.drawImage(image,(int)x + PlayerPannel.WIDTH, (int)y, null);
         }
         if(x > 0){
-            g.drawImage(image, (int)x-GamePannel.WIDTH, (int)y, null);
+            g.drawImage(image, (int)x- PlayerPannel.WIDTH, (int)y, null);
         }
     }
 }
