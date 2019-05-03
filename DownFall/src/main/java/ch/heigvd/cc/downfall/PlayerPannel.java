@@ -1,10 +1,15 @@
 package ch.heigvd.cc.downfall;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-public class PlayerPannel extends JPanel {
+public class PlayerPannel extends JPanel implements Runnable, KeyListener, Observer {
     public static int WIDTH = 540;
     public static int HEIGHT = 720;
     public static int SCALE = 1;
@@ -29,8 +34,21 @@ public class PlayerPannel extends JPanel {
         requestFocus();
     }
 
+    public void addNotify() {
+        super.addNotify();
+        if (thread == null) {
+            thread = new Thread(this);
+            thread.start();
+        }
+    }
+
     private void init() {
-        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+        try {
+            image = ImageIO.read(this.getClass().getResource("/Player.png"));
+        } catch (IOException e) {
+            System.out.println(e);// TODO: handle exception
+        }
         g = (Graphics2D) g;
         running = true;
     }
@@ -57,7 +75,51 @@ public class PlayerPannel extends JPanel {
 
     private void drawToScreen() {
         Graphics g2 = getGraphics();
-        g2.drawImage(image, 0, 0, null);
+        g2.setColor(Color.WHITE);
+        g2.fillRect(0, 0, WIDTH, HEIGHT);
+        g2.drawImage(image, (int) player.getPosX(), (int) player.getPosY(), null);
         g2.dispose();
+    }
+
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    public void keyPressed(KeyEvent ev) {
+        if (ev.getKeyCode() == KeyEvent.VK_W) {
+            player.setXSpeed(0.0);
+            player.setYSpeed(-1.0);
+        }
+        if (ev.getKeyCode() == KeyEvent.VK_A) {
+            player.setXSpeed(-1.);
+            player.setYSpeed(0.);
+        }
+        if (ev.getKeyCode() == KeyEvent.VK_S) {
+        }
+        if (ev.getKeyCode() == KeyEvent.VK_D) {
+            player.setXSpeed(1.);
+            player.setYSpeed(0.);
+        }
+    }
+
+    public void keyReleased(KeyEvent ev) {
+        if (ev.getKeyCode() == KeyEvent.VK_W) {
+            player.setXSpeed(0.0);
+            player.setYSpeed(0.0);
+        }
+        if (ev.getKeyCode() == KeyEvent.VK_A) {
+            player.setXSpeed(0.);
+            player.setYSpeed(0.);
+        }
+        if (ev.getKeyCode() == KeyEvent.VK_S) {
+        }
+        if (ev.getKeyCode() == KeyEvent.VK_D) {
+            player.setXSpeed(0.);
+            player.setYSpeed(0.);
+        }
+    }
+
+    public void update(Object object) {
+
     }
 }

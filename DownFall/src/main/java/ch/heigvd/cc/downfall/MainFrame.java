@@ -21,8 +21,10 @@ public class MainFrame extends JFrame {
     void startPartie() {
         pEnCours = new Partie();
         JPanel mainPanel = new JPanel();
-        JPanel player1 = new PlayerPannel(pEnCours.getPlayer1());
-        JPanel player2 = new PlayerPannel(pEnCours.getPlayer2());
+        PlayerPannel player1 = new PlayerPannel(pEnCours.getPlayer1());
+        player1.addKeyListener(player1);
+        PlayerPannel player2 = new PlayerPannel(pEnCours.getPlayer2());
+        player2.addKeyListener(player2);
         mainPanel.setLayout(new GridLayout(1, 2));
         mainPanel.add(player1);
         mainPanel.add(player2);
