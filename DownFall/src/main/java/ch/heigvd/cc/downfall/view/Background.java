@@ -1,6 +1,4 @@
-package ch.heigvd.cc.downfall.TileMap;
-
-import ch.heigvd.cc.downfall.PlayerPannel;
+package ch.heigvd.cc.view;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -14,23 +12,14 @@ public class Background {
     private double dx;
     private double dy;
 
-    private double moveScale;
-
-    public Background(String s, double moveScale){
-
+    public Background(String s){
         try{
             image = ImageIO.read(
                     getClass().getResourceAsStream(s)
             );
-            this.moveScale = moveScale;
         }catch(Exception e){
             e.printStackTrace();
         }
-    }
-
-    public void setPosition(double x, double y) {
-        this.x = (x*moveScale) % PlayerPannel.WIDTH;
-        this.y = (y*moveScale) % PlayerPannel.HEIGHT;
     }
 
     public void setVector(double dx, double dy){
@@ -39,19 +28,25 @@ public class Background {
     }
 
     public void update(){
-        x+=dx;
-        y+=dy;
+        y = (y+dy)% image.getHeight();
+        x = (x+dx) % image.getWidth();
     }
 
     public void draw(Graphics2D g){
         g.drawImage(image, (int)x, (int)y,null);
 
-        // TODO :: do the same for y  : vertical movement
         if(x<0){
-            g.drawImage(image,(int)x + PlayerPannel.WIDTH, (int)y, null);
+            g.drawImage(image,(int)x + image.getWidth(), (int)y, null);
         }
         if(x > 0){
-            g.drawImage(image, (int)x- PlayerPannel.WIDTH, (int)y, null);
+            g.drawImage(image, (int)x-image.getWidth(), (int)y, null);
+        }
+
+        if(y<0){
+            g.drawImage(image,(int)x, (int)y+image.getHeight(), null);
+        }
+        if(y > 0){
+            g.drawImage(image, (int)x, (int)y- image.getHeight(), null);
         }
     }
 }
