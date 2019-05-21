@@ -1,10 +1,11 @@
-package ch.heigvd.cc.modele;
+package ch.heigvd.cc.downfall.modele;
 
-import ch.heigvd.cc.view.GameFrame;
-import ch.heigvd.cc.view.PlayerView;
+import ch.heigvd.cc.downfall.view.GameFrame;
+import ch.heigvd.cc.downfall.view.PlayerView;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class PlayerModel {
@@ -14,33 +15,32 @@ public class PlayerModel {
     private int down;
     private int left;
     private int right;
+    private int shoot;
 
     HashSet<Integer> keysPressed;
 
-    public void setPlayerKeyMap(int up, int down, int left, int right){
+    public void setPlayerKeyMap(int up, int down, int left, int right, int shoot){
         this.up = up;
         this.down = down;
         this.left = left;
         this.right = right;
+        this.shoot = shoot;
     }
 
-    public void KeyPress(int key){
-        if(key == up){
-            jump();
-            //System.out.println("UP");
-        }
-        if(key == down){
-            //System.out.println("DOWN");
-        }
-        if(key == left){
-            goLeft();
-            //System.out.println("LEFT");
-        }
-        if(key == right){
-            goRight();
-            //System.out.println("RIGHT");
-        }
+    private Boolean shooting = false;
+    public Boolean isShooting(){
+        return  shooting;
     }
+    ArrayList<CupCakeModel> cupCakesThrow;
+    ArrayList<CupCakeModel> cupCakesReceve;
+
+    /*public void setCupCakesThrow(ArrayList<CupCakeModel>  cupCakesThrow){
+        this.cupCakesThrow = cupCakesThrow;
+    }
+
+    public void setCupCakesReceve(ArrayList<CupCakeModel>  cupCakesReceve){
+        this.cupCakesThrow = cupCakesReceve;
+    }*/
 
     private int posX;
     private int posY;
@@ -94,17 +94,39 @@ public class PlayerModel {
     private int vectX;
     private int vectY;
 
-    private int startPosY = -61;
+    public void setVectX(int vectX){
+        this.vectX = vectX;
+    }
+    public void setVectY(int vectY){
+        this.vectY = vectY;
+    }
 
+    private int startPosY = -61;
+    private int speedy;
+
+    private Boolean okToShoot = false;
+    public Boolean getOkToShoot(){
+        return okToShoot;
+    }
+
+    public void setSpeedy(int speed){
+        speedy = speed;
+    }
     private Boolean collision = false;
 
     private PlayerView playerImg;
 
-    PlayerModel(String img){
+    private Boolean goright = false;
+    public Boolean isGoingRight(){
+        return goright;
+    }
+    //long startTime = System.nanoTime();
+
+    public PlayerModel(String img){
         keysPressed = new HashSet<Integer>();
         playerImg = new PlayerView(img);
 
-        posX = (GameFrame.WIDTH/4)-(playerImg.getPlayerImg().getWidth()/2);
+        posX = (GameFrame.WIDTH/4)-(playerImg.getPlayerImg().get(0).getWidth()/2);
         posY = startPosY;
 
         maxSpeed = 300;
@@ -116,10 +138,18 @@ public class PlayerModel {
 
         playerImg.getHitbox().x = posX;
         playerImg.getHitbox().y = posY;
+
+        speedy = 1;
+
     }
 
     public BufferedImage getImg(){
-        return playerImg.getPlayerImg();
+        if(goright){
+            return playerImg.getPlayerImg().get(0);
+        }else{
+            return playerImg.getPlayerImg().get(1);
+        }
+
     }
     public Rectangle getHitbox(){return playerImg.getHitbox(); }
 
@@ -129,6 +159,8 @@ public class PlayerModel {
     }
 
     public void update(){
+        if(vectX > 0) goright = true;
+        if(vectX < 0) goright = false;
         if(keysPressed.contains(up)){
             jump();
         }
@@ -137,6 +169,17 @@ public class PlayerModel {
         }
         if(keysPressed.contains(right)){
             goRight();
+        }
+        if(keysPressed.contains(shoot)){
+            if(okToShoot){
+                shooting = true;
+            }else{
+                shooting = false;
+            }
+            okToShoot = false;
+        }else{
+            shooting = false;
+            okToShoot = true;
         }
         if( !keysPressed.contains(right) || !keysPressed.contains(left)){
             vectX = (int) ((double)vectX * 0.95);
@@ -149,30 +192,28 @@ public class PlayerModel {
                     vectY = maxSpeed;
                 }
             }
-            //posY += vectY / 60;
         }else{
             vectX = (int) ((double)vectX * 0.95);
         }
         posY += vectY / 60;
-        posY++;
-        if(posX<=0){
+        posY += speedy;
+        if(posX<0){
             posX = 0;
             vectX *= -1;
         }
-        if(posX+playerImg.getPlayerImg().getWidth() >= GameFrame.WIDTH/2){
-            posX = GameFrame.WIDTH/2 - playerImg.getPlayerImg().getWidth();
+        if(posX+playerImg.getPlayerImg().get(0).getWidth() > GameFrame.WIDTH/2){
+            posX = GameFrame.WIDTH/2 - playerImg.getPlayerImg().get(0).getWidth();
             vectX *= -1;
         }
         posX += vectX / 60;
-
-        // reset player position when fallen out of frame
-        if(posY > GameFrame.HEIGHT-playerImg.getPlayerImg().getHeight()){
-            posX = (GameFrame.WIDTH/4)-(playerImg.getPlayerImg().getWidth()/2);
-            posY = startPosY;
-            vectY = 0;
-            vectX = 0;
-        }
         updateHitbox();
+    }
+
+    public void resetPlayer(){
+        posX = (GameFrame.WIDTH/4)-(playerImg.getPlayerImg().get(0).getWidth()/2);
+        posY = startPosY;
+        vectY = 0;
+        vectX = 0;
     }
 
     void jump(){

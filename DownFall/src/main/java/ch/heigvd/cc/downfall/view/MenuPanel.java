@@ -1,4 +1,4 @@
-package ch.heigvd.cc.view;
+package ch.heigvd.cc.downfall.view;
 
 import javax.swing.*;
 

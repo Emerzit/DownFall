@@ -1,6 +1,6 @@
-package ch.heigvd.cc;
+package ch.heigvd.cc.downfall;
 
-import ch.heigvd.cc.view.GameFrame;
+import ch.heigvd.cc.downfall.view.GameFrame;
 
 public class MainGame {
 
