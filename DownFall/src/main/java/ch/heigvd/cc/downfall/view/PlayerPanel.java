@@ -1,12 +1,11 @@
-package ch.heigvd.cc.view;
+package ch.heigvd.cc.downfall.view;
 
-import ch.heigvd.cc.modele.PlatformModel;
-import ch.heigvd.cc.modele.PlayerModel;
-import ch.heigvd.cc.modele.PlayerPannelModel;
+import ch.heigvd.cc.downfall.modele.CupCakeModel;
+import ch.heigvd.cc.downfall.modele.PlatformModel;
+import ch.heigvd.cc.downfall.modele.PlayerModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 public class PlayerPanel extends JPanel {
@@ -15,10 +14,9 @@ public class PlayerPanel extends JPanel {
 
     PlayerModel player;
 
-    //image
-    //private BufferedImage image;
-
     ArrayList<PlatformModel> platforms;
+    ArrayList<CupCakeModel> cupCakesThrow;
+    ArrayList<CupCakeModel> cupCakesReceve;
 
 
     public PlayerPanel(){
@@ -45,8 +43,20 @@ public class PlayerPanel extends JPanel {
             //g2.fillRect(platforms.get(i).getHitbox().x,platforms.get(i).getHitbox().y,platforms.get(i).getHitbox().width, platforms.get(i).getHitbox().height);
         }
         if(player != null){
-            g2.fillRect(player.getHitbox().x, player.getHitbox().y, player.getHitbox().width, player.getHitbox().height);
+            //g2.fillRect(player.getHitbox().x, player.getHitbox().y, player.getHitbox().width, player.getHitbox().height);
             g2.drawImage(player.getImg(), player.getPosX(), player.getPosY(), null);
+        }
+        for(int i=0; i< cupCakesThrow.size(); i++){
+            //g2.fillRect(cupCakesThrow.get(i).getHitbox().x,cupCakesThrow.get(i).getHitbox().y,cupCakesThrow.get(i).getHitbox().width,cupCakesThrow.get(i).getHitbox().height );
+            //System.out.println("Hit x = "+cupCakesThrow.get(i).getHitbox().x+"  y = "+cupCakesThrow.get(i).getHitbox().y);
+            g2.drawImage(cupCakesThrow.get(i).getImg(),cupCakesThrow.get(i).getPosX(), cupCakesThrow.get(i).getPosY(), null);
+            //cupCakesThrow.get(i).
+        }
+
+        g2.setColor(Color.RED);
+        for(int i=0; i< cupCakesReceve.size(); i++){
+            //g2.fillRect(cupCakesReceve.get(i).getHitbox().x,cupCakesReceve.get(i).getHitbox().y,cupCakesReceve.get(i).getHitbox().width,cupCakesReceve.get(i).getHitbox().height );
+            g2.drawImage(cupCakesReceve.get(i).getImg(),cupCakesReceve.get(i).getPosX(), cupCakesReceve.get(i).getPosY(), null);
         }
     }
 
@@ -61,6 +71,8 @@ public class PlayerPanel extends JPanel {
     public void setPlatforms(ArrayList<PlatformModel> platforms){
         this.platforms = platforms;
     }
+    public void setCupCakesThrow(ArrayList<CupCakeModel> cupCakesThrow){this.cupCakesThrow = cupCakesThrow;}
+    public void setCupCakesReceve(ArrayList<CupCakeModel> cupCakesReceve){this.cupCakesReceve = cupCakesReceve;}
 
     public void init(){};
 

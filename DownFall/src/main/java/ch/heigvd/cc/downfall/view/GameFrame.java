@@ -1,14 +1,11 @@
-package ch.heigvd.cc.view;
+package ch.heigvd.cc.downfall.view;
 
-//import ch.heigvd.cc.modele.*;
-
-import ch.heigvd.cc.modele.PlayerPannelModel;
-
+import ch.heigvd.cc.downfall.modele.CupCakeModel;
+import ch.heigvd.cc.downfall.modele.PlayerPannelModel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -29,37 +26,47 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
     private long targetTime = 1000/FPS;
 
     //Player1 keys
-    private int player1UP = KeyEvent.VK_UP;
+    /*private int player1UP = KeyEvent.VK_UP;
     private int player1DOWN = KeyEvent.VK_DOWN;
     private int player1LEFT = KeyEvent.VK_LEFT;
-    private int player1RIGHT = KeyEvent.VK_RIGHT;
+    private int player1RIGHT = KeyEvent.VK_RIGHT;*/
 
-    //private int[] player1keysVal = {KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT};
-    //private Boolean[] player1keys = {false,false,false,false};
+    private int player1UP = 104;
+    private int player1DOWN = 101;
+    private int player1LEFT = 100;
+    private int player1RIGHT = 102;
+    private int player1SHOOT = KeyEvent.VK_DOWN;
+    private ArrayList<CupCakeModel> cupCakesPlayer1Throw;
 
     //player2 keys
-    int player2UP = KeyEvent.VK_W;
-    int player2DOWN = KeyEvent.VK_S;
-    int player2LEFT = KeyEvent.VK_A;
-    int player2RIGHT = KeyEvent.VK_D;
-
-    //private int[] player2keysVal = {KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D};
-    //private Boolean[] player2keys = {false,false,false,false};
+    private int player2UP = KeyEvent.VK_W;
+    private int player2DOWN = KeyEvent.VK_S;
+    private int player2LEFT = KeyEvent.VK_A;
+    private int player2RIGHT = KeyEvent.VK_D;
+    private int player2SHOOT = KeyEvent.VK_SPACE;
+    private ArrayList<CupCakeModel> cupCakesPlayer2Throw;
 
     HashSet<Integer> keysPressed;
 
     public GameFrame(){
         pannels = new ArrayList<PlayerPannelModel>();
         keysPressed = new HashSet<Integer>();
-        /*TEST*/
+        cupCakesPlayer1Throw = new ArrayList<CupCakeModel>();
+        cupCakesPlayer2Throw = new ArrayList<CupCakeModel>();
         PlayerPannelModel player1 = new PlayerPannelModel();
-        player1.setPlayerKeyMap(player1UP, player1DOWN, player1LEFT, player1RIGHT);
+        player1.setPlayerKeyMap(player1UP, player1DOWN, player1LEFT, player1RIGHT, player1SHOOT);
         player1.setKeyPressedList(keysPressed);
+        player1.setCupCakesOther(cupCakesPlayer2Throw);
+        player1.setCupCakesThrow(cupCakesPlayer1Throw);
         player1.init();
         PlayerPannelModel player2 = new PlayerPannelModel();
-        player2.setPlayerKeyMap(player2UP, player2DOWN, player2LEFT, player2RIGHT);
+
+        player2.setPlayerKeyMap(player2UP, player2DOWN, player2LEFT, player2RIGHT, player2SHOOT);
         player2.setKeyPressedList(keysPressed);
+        player2.setCupCakesOther(cupCakesPlayer1Throw);
+        player2.setCupCakesThrow(cupCakesPlayer2Throw);
         player2.init();
+        //player2.getPlayerPannel().setCupCakesThrow(cupCakesPlayer2Throw);
 
         pannels.add(player2);
         pannels.add(player1);
@@ -89,7 +96,8 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
         this.pannels = pannels;
     }*/
 
-    public void keyTyped(KeyEvent e) {//System.out.println("adsfadsf");
+    public void keyTyped(KeyEvent e) {
+
         }
     public void keyPressed(KeyEvent e) {
         keysPressed.add(e.getKeyCode());

@@ -1,13 +1,15 @@
-package ch.heigvd.cc.modele;
+package ch.heigvd.cc.downfall.modele;
 
-import ch.heigvd.cc.view.Background;
-import ch.heigvd.cc.view.GameFrame;
-import ch.heigvd.cc.view.PlatformImg;
-import ch.heigvd.cc.view.PlayerPanel;
+import ch.heigvd.cc.downfall.view.Background;
+import ch.heigvd.cc.downfall.view.GameFrame;
+import ch.heigvd.cc.downfall.view.PlatformImg;
+import ch.heigvd.cc.downfall.view.PlayerPanel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
+
+import static java.lang.Math.abs;
 
 public class PlayerPannelModel {
     PlayerPanel pannel;
@@ -17,13 +19,33 @@ public class PlayerPannelModel {
     Random rand;
 
     ArrayList<PlatformModel> platforms;
+    ArrayList<CupCakeModel> cupCakesThrow;
+    ArrayList<CupCakeModel> cupCakesReceve;
+    ArrayList<CupCakeModel> cupCakesOther;
+
+    public void setCupCakesOther(ArrayList<CupCakeModel> cupCakesOther){
+        this.cupCakesOther = cupCakesOther;
+    }
+    public void setCupCakesThrow(ArrayList<CupCakeModel> cupCakesThrow){
+        this.cupCakesThrow = cupCakesThrow;
+    }
 
     int distBetweenPlatforms;
     int maxPlatformLength;
 
     int yspeed;
 
+    long startTime = System.nanoTime();
+
+    private int maxShots = 5;
+    private int currentShots = 0;
+
     public PlayerPannelModel(){
+
+        cupCakesThrow = new ArrayList<CupCakeModel>();
+        cupCakesReceve = new ArrayList<CupCakeModel>();
+        cupCakesOther = new ArrayList<CupCakeModel>();
+
         rand = new Random();
         distBetweenPlatforms = 100;
         yspeed = 1;
@@ -45,7 +67,7 @@ public class PlayerPannelModel {
 
     void addPlateform(int y){
         int size = rand.nextInt(maxPlatformLength+1);
-        int x = (rand.nextInt(GameFrame.WIDTH / 2)- (PlatformImg.BLOCKSIZE*size));
+        int x = (rand.nextInt(GameFrame.WIDTH / 2)- ( PlatformImg.BLOCKSIZE * (size+1)));
         platforms.add(new PlatformModel(x, y, PlatformImg.createPlatform(size)));
     }
 
@@ -55,7 +77,6 @@ public class PlayerPannelModel {
         }
         if(platforms.get(platforms.size()-1).getY() > distBetweenPlatforms){
             addPlateform(-PlatformImg.BLOCKSIZE);
-            //System.out.println( platforms.get(platforms.size()-1).getY() + " > " + distBetweenPlatforms);
         }
 
         if(platforms.get(0).getY() > GameFrame.HEIGHT){
@@ -67,19 +88,57 @@ public class PlayerPannelModel {
     public void init(){
         initPlatforms();
         pannel.setPlatforms(platforms);
+        pannel.setCupCakesReceve(cupCakesReceve);
+        pannel.setCupCakesThrow(cupCakesThrow);
     }
 
     public void update(){
+
+        if(player.getPosY() > GameFrame.HEIGHT - player.getImg().getHeight() ){
+            player.resetPlayer();
+            destroyCupCakes();
+            currentShots = 0;
+        }
+
+        if(player.isShooting() && currentShots < maxShots){
+            shoot();
+            currentShots++;
+        }
+        if(System.nanoTime() - startTime > 1000000000 && currentShots > 0){
+            currentShots--;
+            startTime = System.nanoTime();
+            System.out.println(currentShots);
+        }
         detectCollision();
         updatePlatforms();
 
         player.update();
-
-
-        draw();
+        updateCupCakes();
+        if(player.getPosY() < 100){
+            yspeed = (100-player.getPosY())/30 + 1;
+        }else{
+            yspeed = 1;
+        }
+        player.setSpeedy(yspeed);
+        bg.setVector(0, (yspeed/4.0));
+        //pannel.setCupCakesReceve(cupCakesReceve);
+        //pannel.setCupCakesThrow(cupCakesThrow);
+        //draw();
     }
 
-    public void detectCollision(){
+    private void destroyCupCakes() {
+        for(int i = cupCakesOther.size(); i>0; i--){
+            cupCakesOther.get(i-1).setCollision(true);
+        }
+        for(int i = cupCakesReceve.size(); i>0; i--){
+            cupCakesReceve.get(i-1).setCollision(true);
+        }
+        for(int i = cupCakesThrow.size(); i>0; i--){
+            cupCakesThrow.get(i-1).setCollision(true);
+        }
+    }
+
+    void detectCollision(){
         for(int i = 0; i<platforms.size(); i++ ){
             if(platforms.get(i).getHitbox().intersects(player.getHitbox()) && player.getHitbox().y+player.getHitbox().height < platforms.get(i).getHitbox().y+10){
                 player.setCollision(true);
@@ -90,20 +149,88 @@ public class PlayerPannelModel {
         player.setCollision(false);
     }
 
+    void updateCupCakes(){
+
+        for(int i=0; i<cupCakesOther.size(); i++ ){
+            if(cupCakesOther.get(i).getPosX() < 0 && !cupCakesOther.get(i).isCopied()){
+                CupCakeModel sh = new CupCakeModel(false,
+                        cupCakesOther.get(i).getPosX()+ GameFrame.WIDTH / 2,
+                        cupCakesOther.get(i).getPosY());
+                sh.setVectY(cupCakesOther.get(i).getVectY());
+                cupCakesReceve.add(sh);
+                cupCakesOther.get(i).setCopied(true);
+            }
+            if(cupCakesOther.get(i).getPosX() + cupCakesOther.get(i).getImg().getWidth() > GameFrame.WIDTH / 2 && !cupCakesOther.get(i).isCopied()){
+                CupCakeModel sh = new CupCakeModel(true,
+                        cupCakesOther.get(i).getPosX() - GameFrame.WIDTH / 2,
+                        cupCakesOther.get(i).getPosY());
+                sh.setVectY(cupCakesOther.get(i).getVectY());
+                cupCakesReceve.add(sh);
+                cupCakesOther.get(i).setCopied(true);
+            }
+        }
+
+        for(int i =0;i<cupCakesReceve.size(); i++){
+            if(cupCakesReceve.get(i).isDestroyed() ||
+                    cupCakesReceve.get(i).getPosX() + cupCakesReceve.get(i).getImg().getWidth() < 0 ||
+                    cupCakesReceve.get(i).getPosX() - cupCakesReceve.get(i).getImg().getWidth() > GameFrame.WIDTH / 2){
+                cupCakesReceve.remove(i);
+                i--;
+            }
+        }
+        for(int i =0;i<cupCakesThrow.size(); i++) {
+            if (cupCakesThrow.get(i).isDestroyed() ||
+                    cupCakesThrow.get(i).getPosX() + cupCakesThrow.get(i).getImg().getWidth() < 0 ||
+                    cupCakesThrow.get(i).getPosX() - cupCakesThrow.get(i).getImg().getWidth() > GameFrame.WIDTH / 2
+            ) {
+                cupCakesThrow.remove(i);
+                i--;
+            }
+        }
+
+        for(int i = 0; i<cupCakesThrow.size();i++){
+            cupCakesThrow.get(i).update();
+        }
+        for(int i = 0; i<cupCakesReceve.size();i++){
+            if(cupCakesReceve.get(i).getPosX() + cupCakesReceve.get(i).getOffsetX()<=0 && !cupCakesReceve.get(i).getLeftOrRight()){
+                cupCakesReceve.get(i).setCollision(true);
+            }
+            if(cupCakesReceve.get(i).getPosX() + cupCakesReceve.get(i).getImg().getWidth() - cupCakesReceve.get(i).getOffsetX()  >=  GameFrame.WIDTH / 2 && cupCakesReceve.get(i).getLeftOrRight()){
+                cupCakesReceve.get(i).setCollision(true);
+            }
+            if(cupCakesReceve.get(i).getHitbox().intersects(player.getHitbox()) && !cupCakesReceve.get(i).getIsExploding()){
+                cupCakesReceve.get(i).setCollision(true);
+                double distX = (player.getPosX() + player.getImg().getWidth()/2) - (cupCakesReceve.get(i).getPosX() + cupCakesReceve.get(i).getImg().getWidth()/2);
+                double distY = (player.getPosY() + player.getImg().getHeight()/2) - (cupCakesReceve.get(i).getPosY() + cupCakesReceve.get(i).getImg().getHeight()/2);
+                double explX = ( distX/(abs(distX)+abs(distY)))*cupCakesReceve.get(i).getExplosionForce();
+                double explY = (distY/(abs(distX)+abs(distY)))*cupCakesReceve.get(i).getExplosionForce();
+                player.setVectX((int)explX);
+                player.setVectY((int)explY);
+            }
+            cupCakesReceve.get(i).update();
+        }
+    }
+
+    void shoot(){
+        int x = player.getPosX() - player.getImg().getWidth();
+        if(player.isGoingRight()){
+            x =player.getPosX();
+        }
+        int y = player.getPosY() - player.getImg().getHeight();
+        this.cupCakesThrow.add(new CupCakeModel(player.isGoingRight(),x,y));
+        System.out.println("--> shoot : "+ cupCakesThrow.size()+ " receve : "+cupCakesReceve.size() + " Other : "+ cupCakesOther.size());
+    }
+/*
     public void draw(){
         pannel.update();
-    }
+    }*/
 
     public PlayerPanel getPlayerPannel(){
         return pannel;
     }
 
-    public void setPlayerKeyMap(int up, int down, int left, int right){
-        player.setPlayerKeyMap(up, down, left, right);
-    }
-
-    public void KeyPress(int key){
-        player.KeyPress(key);
+    public void setPlayerKeyMap(int up, int down, int left, int right, int shoot){
+        player.setPlayerKeyMap(up, down, left, right, shoot);
     }
 
     public void setKeyPressedList(HashSet keysPressed){
