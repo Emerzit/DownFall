@@ -1,4 +1,4 @@
-package ch.heigvd.cc.modele;
+package ch.heigvd.cc.downfall.modele;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

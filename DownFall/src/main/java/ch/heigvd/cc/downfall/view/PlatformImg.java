@@ -1,14 +1,12 @@
-package ch.heigvd.cc.view;
+package ch.heigvd.cc.downfall.view;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class PlatformImg {
-    private BufferedImage image;
-    private int size;
-    public static int BLOCKSIZE = 30; // taille des block image --> 30px x 30px
 
+    public static int BLOCKSIZE = 30; // taille des block image --> 30px x 30px
 
     private static BufferedImage baseImage;
 
@@ -40,8 +38,5 @@ public class PlatformImg {
 
         return image;
     }
-
-    public BufferedImage getImage(){return image;}
-
 
 }
