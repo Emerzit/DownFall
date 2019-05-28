@@ -137,4 +137,16 @@ public class CupCakeModel {
     public boolean isDestroyed() {
         return isDestroyed;
     }
+
+    public int getMaxSpeed() {
+        return maxSpeed;
+    }
+
+    public int getGravity() {
+        return gravity;
+    }
+
+    CupCakeView getCupCakeImg() {
+        return cupCakeImg;
+    }
 }
