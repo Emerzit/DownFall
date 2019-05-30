@@ -5,7 +5,6 @@ import ch.heigvd.cc.downfall.view.PlayerView;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashSet;
 
 public class PlayerModel {
@@ -31,16 +30,6 @@ public class PlayerModel {
     public Boolean isShooting(){
         return  shooting;
     }
-    ArrayList<CupCakeModel> cupCakesThrow;
-    ArrayList<CupCakeModel> cupCakesReceve;
-
-    /*public void setCupCakesThrow(ArrayList<CupCakeModel>  cupCakesThrow){
-        this.cupCakesThrow = cupCakesThrow;
-    }
-
-    public void setCupCakesReceve(ArrayList<CupCakeModel>  cupCakesReceve){
-        this.cupCakesThrow = cupCakesReceve;
-    }*/
 
     private int posX;
     private int posY;
@@ -101,7 +90,7 @@ public class PlayerModel {
         this.vectY = vectY;
     }
 
-    private int startPosY = -61;
+    private int startPosY = -100;
     private int speedy;
 
     private Boolean okToShoot = false;
@@ -120,9 +109,19 @@ public class PlayerModel {
     public Boolean isGoingRight(){
         return goright;
     }
-    //long startTime = System.nanoTime();
+    long curTime = System.nanoTime();
+
+    private int livesLeft;
+    public void setLivesLeft(int lives){
+        livesLeft = lives;
+    }
+
+    public int getLivesLeft(){
+        return livesLeft;
+    }
 
     public PlayerModel(String img){
+        livesLeft = 5;
         keysPressed = new HashSet<Integer>();
         playerImg = new PlayerView(img);
 
@@ -214,6 +213,10 @@ public class PlayerModel {
         posY = startPosY;
         vectY = 0;
         vectX = 0;
+        // évide d'avoir 2x les vies qui s'enlèves
+        if(System.nanoTime() - curTime > 100000000)
+            livesLeft--;
+        curTime = System.nanoTime();
     }
 
     void jump(){

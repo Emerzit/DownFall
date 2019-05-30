@@ -11,7 +11,7 @@ import java.util.Random;
 
 import static java.lang.Math.abs;
 
-public class PlayerPannelModel {
+public class PlayerPannelModel extends PannelModel {
     PlayerPanel pannel;
     Background bg;
     PlayerModel player;
@@ -40,7 +40,15 @@ public class PlayerPannelModel {
     private int maxShots = 5;
     private int currentShots = 0;
 
-    public PlayerPannelModel(){
+    private Boolean gameStart = false;
+    private Boolean pause = false;
+
+    public void setPause(Boolean pause){
+        this.pause = pause;
+        pannel.setPause(pause);
+    }
+
+    public PlayerPannelModel(String playerName){
 
         cupCakesThrow = new ArrayList<CupCakeModel>();
         cupCakesReceve = new ArrayList<CupCakeModel>();
@@ -50,8 +58,9 @@ public class PlayerPannelModel {
         distBetweenPlatforms = 100;
         yspeed = 1;
         bg = new Background("/Backgrounds/menubg.gif");
-        bg.setVector(0, -(yspeed/4.0));
+        bg.setVector(0, 0);
         pannel = new PlayerPanel();
+        pannel.setPlayerName(playerName);
         pannel.setBg(bg);
         platforms = new ArrayList<PlatformModel>();
         maxPlatformLength = 5;
@@ -90,9 +99,16 @@ public class PlayerPannelModel {
         pannel.setPlatforms(platforms);
         pannel.setCupCakesReceve(cupCakesReceve);
         pannel.setCupCakesThrow(cupCakesThrow);
+        pannel.setGameStart(gameStart);
     }
 
     public void update(){
+        if(pause){
+            bg.setVector(0,0);
+            return;}
+        pannel.setLivesLeft(player.getLivesLeft());
+        if(!gameStart) gameStart = pannel.getGameStart();
+        if(!gameStart) return;
 
         if(player.getPosY() > GameFrame.HEIGHT - player.getImg().getHeight() ){
             player.resetPlayer();
@@ -109,6 +125,8 @@ public class PlayerPannelModel {
             startTime = System.nanoTime();
             System.out.println(currentShots);
         }
+        pannel.setCurPrimaryShots(currentShots);
+        pannel.setMaxPrimaryShots(maxShots);
         detectCollision();
         updatePlatforms();
 
@@ -121,9 +139,6 @@ public class PlayerPannelModel {
         }
         player.setSpeedy(yspeed);
         bg.setVector(0, (yspeed/4.0));
-        //pannel.setCupCakesReceve(cupCakesReceve);
-        //pannel.setCupCakesThrow(cupCakesThrow);
-        //draw();
     }
 
     private void destroyCupCakes() {
@@ -235,6 +250,10 @@ public class PlayerPannelModel {
 
     public void setKeyPressedList(HashSet keysPressed){
         player.setKeyPressedList(keysPressed);
+    }
+
+    public void repaint(){
+        pannel.repaint();
     }
 
 }

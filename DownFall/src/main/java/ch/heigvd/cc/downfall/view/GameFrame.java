@@ -48,18 +48,20 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
 
     HashSet<Integer> keysPressed;
 
+    Boolean pause = false;
+
     public GameFrame(){
         pannels = new ArrayList<PlayerPannelModel>();
         keysPressed = new HashSet<Integer>();
         cupCakesPlayer1Throw = new ArrayList<CupCakeModel>();
         cupCakesPlayer2Throw = new ArrayList<CupCakeModel>();
-        PlayerPannelModel player1 = new PlayerPannelModel();
+        PlayerPannelModel player1 = new PlayerPannelModel("Player 1");
         player1.setPlayerKeyMap(player1UP, player1DOWN, player1LEFT, player1RIGHT, player1SHOOT);
         player1.setKeyPressedList(keysPressed);
         player1.setCupCakesOther(cupCakesPlayer2Throw);
         player1.setCupCakesThrow(cupCakesPlayer1Throw);
         player1.init();
-        PlayerPannelModel player2 = new PlayerPannelModel();
+        PlayerPannelModel player2 = new PlayerPannelModel("Player 2");
 
         player2.setPlayerKeyMap(player2UP, player2DOWN, player2LEFT, player2RIGHT, player2SHOOT);
         player2.setKeyPressedList(keysPressed);
@@ -100,6 +102,7 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
 
         }
     public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_ESCAPE) pause = !pause;
         keysPressed.add(e.getKeyCode());
     }
     public void keyReleased(KeyEvent e) {
@@ -116,7 +119,8 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
             start = System.nanoTime();
             for(int i = 0; i<pannels.size(); i++){
                 pannels.get(i).update();
-                pannels.get(i).getPlayerPannel().repaint();
+                pannels.get(i).repaint();
+                pannels.get(i).setPause(pause);
             }
             //update();
             elapsed = System.nanoTime() - start;
