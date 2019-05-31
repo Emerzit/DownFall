@@ -5,6 +5,7 @@ import ch.heigvd.cc.downfall.view.GameFrame;
 import ch.heigvd.cc.downfall.view.PlatformImg;
 import ch.heigvd.cc.downfall.view.PlayerPanel;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
@@ -48,6 +49,10 @@ public class PlayerPannelModel extends PannelModel {
         pannel.setPause(pause);
     }
 
+    private Boolean lost = false;
+    public Boolean hasLost(){
+        return lost;
+    }
     public PlayerPannelModel(String playerName){
 
         cupCakesThrow = new ArrayList<CupCakeModel>();
@@ -105,8 +110,13 @@ public class PlayerPannelModel extends PannelModel {
     public void update(){
         if(pause){
             bg.setVector(0,0);
-            return;}
+            return;
+        }
         pannel.setLivesLeft(player.getLivesLeft());
+        if(player.getLivesLeft()<0){
+            lost = true;
+            return;
+        }
         if(!gameStart) gameStart = pannel.getGameStart();
         if(!gameStart) return;
 
@@ -233,14 +243,13 @@ public class PlayerPannelModel extends PannelModel {
         }
         int y = player.getPosY() - player.getImg().getHeight();
         this.cupCakesThrow.add(new CupCakeModel(player.isGoingRight(),x,y));
-        System.out.println("--> shoot : "+ cupCakesThrow.size()+ " receve : "+cupCakesReceve.size() + " Other : "+ cupCakesOther.size());
     }
 /*
     public void draw(){
         pannel.update();
     }*/
 
-    public PlayerPanel getPlayerPannel(){
+    public JPanel getPannel(){
         return pannel;
     }
 

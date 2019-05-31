@@ -32,7 +32,11 @@ public class PlayerPanel extends JPanel {
 
     private int livesLeft;
     public void setLivesLeft(int lives){
-        livesLeft = lives;
+        if(lives>0){
+            livesLeft = lives;
+        }else{
+            livesLeft = 0;
+        }
     }
 
     private Font shootFont;
@@ -149,7 +153,6 @@ public class PlayerPanel extends JPanel {
             g2.drawImage(cupCakesReceve.get(i).getImg(), cupCakesReceve.get(i).getPosX(), cupCakesReceve.get(i).getPosY(), null);
         }
 
-
         // affichage status tir
         shootStatus(g2);
 
@@ -207,16 +210,20 @@ public class PlayerPanel extends JPanel {
 
         g2.drawString(coutDownNo, countX, txtY+metrics.getHeight());
 
-        if(System.nanoTime() - timer > 1000000000){
-            countDown--;
-            timer = System.nanoTime();
-        }
-        if(countDown == 0){
-            gameStart = true;
+        if(!pause) {
+            if (System.nanoTime() - timer > 1000000000) {
+                countDown--;
+                timer = System.nanoTime();
+            }
+            if (countDown == 0) {
+                gameStart = true;
+            }
         }
     }
 
     protected void pause(Graphics2D g2){
+        g2.setColor(new Color(0, 0, 0, 45));
+        g2.fillRect(0,0,GameFrame.WIDTH/2, GameFrame.HEIGHT);
         rolli = (rolli+1)%256;
         if(rolli == 0) rollj = (rollj+1)%6;
         switch(rollj){
