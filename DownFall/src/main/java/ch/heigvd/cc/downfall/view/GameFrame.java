@@ -1,6 +1,7 @@
 package ch.heigvd.cc.downfall.view;
 
 import ch.heigvd.cc.downfall.modele.*;
+import ch.heigvd.cc.downfall.utils.Pair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,11 +27,6 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
     private long targetTime = 1000/FPS;
 
     //Player1 keys
-    /*private int player1UP = KeyEvent.VK_UP;
-    private int player1DOWN = KeyEvent.VK_DOWN;
-    private int player1LEFT = KeyEvent.VK_LEFT;
-    private int player1RIGHT = KeyEvent.VK_RIGHT;*/
-
     private String player1Name = "Player1";
     private int player1wins = 0;
     private int player1UP = 104;
@@ -49,7 +45,6 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
     private int player2RIGHT = KeyEvent.VK_D;
     private int player2SHOOT = KeyEvent.VK_SPACE;
     private ArrayList<CupCakeModel> cupCakesPlayer2Throw;
-
     HashSet<Integer> keysPressed;
     HashSet<Integer> keysToggled;
 
@@ -58,6 +53,7 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
 
     MenuPanelModel menu;
     WinPanelModel winPanel;
+    OptionPanelModel optionPanel;
 
     // afin de savoir quel état afficher
     // 0 = gameMenu
@@ -78,9 +74,12 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
         gameFrame = new JFrame("DownFall");
         initMenu();
 
-        for(int i = 0; i< pannels.size(); i++){
-            gameFrame.add(pannels.get(i).getPannel());
-        }
+        /*optionPanel = new OptionPanelModel(player1Name, player1UP, player1DOWN, player1LEFT, player1RIGHT, player1SHOOT, player2Name, player2UP, player2DOWN, player2LEFT, player2RIGHT, player2SHOOT);
+        optionPanel.setKeyPressedList(keysPressed);
+        pannels.add(optionPanel);
+        gameFrame.add(optionPanel.getPannel());
+        gameFrame.setVisible(true);*/
+
         gameFrame.setLayout(new GridLayout(1, pannels.size()));
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameFrame.setResizable(false);
@@ -91,6 +90,16 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
         gameFrame.pack();
         gameFrame.setVisible(true);
         gameFrame.addKeyListener(this);
+    }
+
+    private void initOptions(){
+        gameFrame.getContentPane().removeAll();
+        pannels.clear();
+        optionPanel = new OptionPanelModel(player1Name, player1UP, player1DOWN, player1LEFT, player1RIGHT, player1SHOOT, player2Name, player2UP, player2DOWN, player2LEFT, player2RIGHT, player2SHOOT);
+        optionPanel.setKeyPressedList(keysPressed);
+        pannels.add(optionPanel);
+        gameFrame.add(optionPanel.getPannel());
+        gameFrame.setVisible(true);
     }
 
     private void initWinPanel(){
@@ -104,9 +113,7 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
         pannels.clear();
         winPanel.setKeyPressedList(keysPressed);
         pannels.add(winPanel);
-        for(int i = 0; i< pannels.size(); i++){
-            gameFrame.add(pannels.get(i).getPannel());
-        }
+        gameFrame.add(winPanel.getPannel());
         gameFrame.setVisible(true);
     }
 
@@ -118,9 +125,7 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
         menu = new MenuPanelModel();
         menu.setKeyPressedList(keysPressed);
         pannels.add(menu);
-        for(int i = 0; i< pannels.size(); i++){
-            gameFrame.add(pannels.get(i).getPannel());
-        }
+        gameFrame.add(menu.getPannel());
         gameFrame.setVisible(true);
     }
 
@@ -153,10 +158,12 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
     }
 
     public void keyTyped(KeyEvent e) {
+        if(curState == 1) optionPanel.setLastChar(e.getKeyChar());
+    }
 
-        }
     public void keyPressed(KeyEvent e) {
         keysPressed.add(e.getKeyCode());
+        if(curState == 1) optionPanel.setLastTyped(e.getKeyCode());
     }
     public void keyReleased(KeyEvent e) {
         keysPressed.remove(e.getKeyCode());
@@ -177,6 +184,7 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
                 // 4 = quit
                 switch (nextState){
                     case 0:initMenu();break;
+                    case 1:initOptions();break;
                     case 2:initGame(); break;
                     case 3:initWinPanel();break;
                     case 4:System.exit(0);
@@ -198,6 +206,9 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
                 if(pannels.get(i).getClass() == WinPanelModel.class){
                     manageWinPanel((WinPanelModel) pannels.get(i));
                 }
+                if(pannels.get(i).getClass() == OptionPanelModel.class){
+                    manageOptionMenu((OptionPanelModel) pannels.get(i));
+                }
             }
             //update();
             elapsed = System.nanoTime() - start;
@@ -217,6 +228,30 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
     // 2 = game play
     // 3 = game win
     // 4 = quit
+
+    private void manageOptionMenu(OptionPanelModel optionPanel){
+        if(toggleKey(KeyEvent.VK_ENTER) && optionPanel.getGameOption() == 12){
+            ArrayList<Pair> options = optionPanel.getOptions();
+            //Player1
+            player1Name = (String)options.get(6).second();
+            player1UP = (Integer) options.get(7).second();
+            player1DOWN = (Integer) options.get(8).second();
+            player1LEFT = (Integer) options.get(9).second();
+            player1RIGHT = (Integer) options.get(10).second();
+            player1SHOOT = (Integer) options.get(11).second();
+
+            //player2
+            player2Name =  (String)options.get(0).second();
+            player2UP = (Integer) options.get(1).second();
+            player2DOWN = (Integer) options.get(2).second();
+            player2LEFT = (Integer) options.get(3).second();
+            player2RIGHT = (Integer) options.get(4).second();
+            player2SHOOT = (Integer) options.get(5).second();
+
+            // retour au menu principal
+            nextState = 0;
+        }
+    }
 
     private void manageGameMenu(MenuPanelModel menu){
         //System.out.println(toggleKey(KeyEvent.VK_ENTER));
@@ -249,18 +284,6 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
             pausePress = true;
         }
     }
-
-    /*if(keysPressed.contains(shoot)){
-            if(okToShoot){
-                shooting = true;
-            }else{
-                shooting = false;
-            }
-            okToShoot = false;
-        }else{
-            shooting = false;
-            okToShoot = true;
-        }*/
 
     private Boolean toggleKey(int key){
         Boolean returnVal = false;
