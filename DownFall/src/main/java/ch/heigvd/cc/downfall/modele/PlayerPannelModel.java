@@ -237,4 +237,7 @@ public class PlayerPannelModel {
         player.setKeyPressedList(keysPressed);
     }
 
+    public PlayerModel getPlayer() {
+        return player;
+    }
 }
