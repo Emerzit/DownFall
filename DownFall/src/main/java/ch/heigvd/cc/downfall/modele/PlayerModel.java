@@ -255,4 +255,19 @@ public class PlayerModel {
         this.keysPressed = keysPressed;
     }
 
+    public int getUp() {
+        return up;
+    }
+
+    public int getDown() {
+        return down;
+    }
+
+    public int getLeft() {
+        return left;
+    }
+
+    public int getRight() {
+        return right;
+    }
 }
