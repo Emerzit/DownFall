@@ -12,7 +12,7 @@ import java.util.HashSet;
 
 public class GameFrame extends JFrame implements Runnable, KeyListener {
     JFrame gameFrame;
-    ArrayList<PannelModel> pannels;
+    ArrayList<PannelModel> pannels;     // liste des panneaux qui seront affichées (changemnt selon état du jeu)
 
     //dimentions
     public static int WIDTH = 640;
@@ -73,13 +73,6 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
     public void init(){
         gameFrame = new JFrame("DownFall");
         initMenu();
-
-        /*optionPanel = new OptionPanelModel(player1Name, player1UP, player1DOWN, player1LEFT, player1RIGHT, player1SHOOT, player2Name, player2UP, player2DOWN, player2LEFT, player2RIGHT, player2SHOOT);
-        optionPanel.setKeyPressedList(keysPressed);
-        pannels.add(optionPanel);
-        gameFrame.add(optionPanel.getPannel());
-        gameFrame.setVisible(true);*/
-
         gameFrame.setLayout(new GridLayout(1, pannels.size()));
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gameFrame.setResizable(false);
@@ -170,10 +163,10 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
     }
 
     public void run(){
-        //init();
         long start;
         long elapsed;
         long wait;
+
 
         while(true){
             if(curState != nextState){
@@ -210,7 +203,6 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
                     manageOptionMenu((OptionPanelModel) pannels.get(i));
                 }
             }
-            //update();
             elapsed = System.nanoTime() - start;
             wait = targetTime - elapsed / 1000000;
             if(wait < 0) wait = 5;
@@ -254,7 +246,6 @@ public class GameFrame extends JFrame implements Runnable, KeyListener {
     }
 
     private void manageGameMenu(MenuPanelModel menu){
-        //System.out.println(toggleKey(KeyEvent.VK_ENTER));
         if(toggleKey(KeyEvent.VK_ENTER)){
            switch (menu.getGameOption()){
                case 0 : nextState = 2; break;

@@ -20,9 +20,9 @@ public class PlayerPannelModel extends PannelModel {
     Random rand;
 
     ArrayList<PlatformModel> platforms;
-    ArrayList<CupCakeModel> cupCakesThrow;
-    ArrayList<CupCakeModel> cupCakesReceve;
-    ArrayList<CupCakeModel> cupCakesOther;
+    ArrayList<CupCakeModel> cupCakesThrow;      //cupcakes lancé par le joueur
+    ArrayList<CupCakeModel> cupCakesReceve;     //cupcakes lancé par le joueur adverse à afficher
+    ArrayList<CupCakeModel> cupCakesOther;      //cupcakes lancé par le joueur adverse dans sa zone
 
     public void setCupCakesOther(ArrayList<CupCakeModel> cupCakesOther){
         this.cupCakesOther = cupCakesOther;
@@ -108,6 +108,7 @@ public class PlayerPannelModel extends PannelModel {
     }
 
     public void update(){
+        // si pause on ne mets plus à jour l'affichage
         if(pause){
             bg.setVector(0,0);
             return;
@@ -244,10 +245,6 @@ public class PlayerPannelModel extends PannelModel {
         int y = player.getPosY() - player.getImg().getHeight();
         this.cupCakesThrow.add(new CupCakeModel(player.isGoingRight(),x,y));
     }
-/*
-    public void draw(){
-        pannel.update();
-    }*/
 
     public JPanel getPannel(){
         return pannel;

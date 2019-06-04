@@ -42,13 +42,6 @@ public class OptionPanelModel extends PannelModel{
     private String player1Name;
     private String player2Name;
 
-    /*public void setPlayer1Name(String name){
-        player1Name = name;
-    }
-    public void setPlayer2Name(String name){
-        player2Name = name;
-    }*/
-
     public OptionPanelModel(
             String pl1Name,
             int pl1Up,
@@ -130,7 +123,7 @@ public class OptionPanelModel extends PannelModel{
         if(lastTyped != curTyped){
             curTyped = lastTyped;
         }
-        
+
         if(toggleKey(KeyEvent.VK_ENTER)){
             choiceIsSelected = !choiceIsSelected;
             player2Name = (String)options.get(0).second();

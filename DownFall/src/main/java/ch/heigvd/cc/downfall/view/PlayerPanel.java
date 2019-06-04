@@ -18,10 +18,11 @@ public class PlayerPanel extends JPanel {
     private PlayerModel player;
 
     ArrayList<PlatformModel> platforms;
-    ArrayList<CupCakeModel> cupCakesThrow;
-    ArrayList<CupCakeModel> cupCakesReceve;
+    ArrayList<CupCakeModel> cupCakesThrow;      // contient les cupcakes lancé par le joueur
+    ArrayList<CupCakeModel> cupCakesReceve;     // contoent les cupcakes lancées par le joeur adverse
 
     private int maxPrimaryShots;
+
     public void setMaxPrimaryShots(int maxPrimaryShots){
         this.maxPrimaryShots = maxPrimaryShots;
     }
@@ -63,7 +64,7 @@ public class PlayerPanel extends JPanel {
         this.playerName = playerName;
     }
 
-    // pour le débur de la partie avec countdown
+    // pour le début de la partie avec countdown
     private Boolean gameStart;
     public void setGameStart(Boolean gameStart){
         this.gameStart = gameStart;
@@ -134,22 +135,16 @@ public class PlayerPanel extends JPanel {
         g2.setColor(Color.ORANGE);
         for (int i = 0; i < platforms.size(); i++) {
             g2.drawImage(platforms.get(i).getImg(), platforms.get(i).getX(), platforms.get(i).getY(), null);
-            //g2.fillRect(platforms.get(i).getHitbox().x,platforms.get(i).getHitbox().y,platforms.get(i).getHitbox().width, platforms.get(i).getHitbox().height);
         }
         if (player != null) {
-            //g2.fillRect(player.getHitbox().x, player.getHitbox().y, player.getHitbox().width, player.getHitbox().height);
             g2.drawImage(player.getImg(), player.getPosX(), player.getPosY(), null);
         }
         for (int i = 0; i < cupCakesThrow.size(); i++) {
-            //g2.fillRect(cupCakesThrow.get(i).getHitbox().x,cupCakesThrow.get(i).getHitbox().y,cupCakesThrow.get(i).getHitbox().width,cupCakesThrow.get(i).getHitbox().height );
-            //System.out.println("Hit x = "+cupCakesThrow.get(i).getHitbox().x+"  y = "+cupCakesThrow.get(i).getHitbox().y);
             g2.drawImage(cupCakesThrow.get(i).getImg(), cupCakesThrow.get(i).getPosX(), cupCakesThrow.get(i).getPosY(), null);
-            //cupCakesThrow.get(i).
         }
 
         g2.setColor(Color.RED);
         for (int i = 0; i < cupCakesReceve.size(); i++) {
-            //g2.fillRect(cupCakesReceve.get(i).getHitbox().x,cupCakesReceve.get(i).getHitbox().y,cupCakesReceve.get(i).getHitbox().width,cupCakesReceve.get(i).getHitbox().height );
             g2.drawImage(cupCakesReceve.get(i).getImg(), cupCakesReceve.get(i).getPosX(), cupCakesReceve.get(i).getPosY(), null);
         }
 
@@ -278,20 +273,8 @@ public class PlayerPanel extends JPanel {
     public void setCupCakesReceve(ArrayList<CupCakeModel> cupCakesReceve) {
         this.cupCakesReceve = cupCakesReceve;
     }
-/*
-    public void init() {
-    }
 
-    public void update() {
-        bg.update();
-        repaint();
-    }
-*/
     public void setPlayer(PlayerModel player) {
         this.player = player;
     }
-/*
-    public void keyPressed(int k){};
-    public void keyReleased(int k){};
-*/
 }

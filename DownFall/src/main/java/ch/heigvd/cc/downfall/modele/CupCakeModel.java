@@ -6,6 +6,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class CupCakeModel {
+
     private int posX;
     private int posY;
 
@@ -31,10 +32,6 @@ public class CupCakeModel {
     private Boolean leftOrRight;
     public Boolean getLeftOrRight(){
         return leftOrRight;
-    }
-
-    public int getVectX(){
-        return vectX;
     }
 
     public int getVectY(){
@@ -94,7 +91,6 @@ public class CupCakeModel {
     }
 
     public BufferedImage getImg(){
-        //System.out.println(imgpos);
         return cupCakeImg.getCupCakeImg().get(imgpos);
     }
     public Rectangle getHitbox(){return cupCakeImg.getHitbox(); }

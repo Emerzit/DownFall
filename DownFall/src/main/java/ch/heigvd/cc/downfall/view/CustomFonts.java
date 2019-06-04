@@ -2,7 +2,6 @@ package ch.heigvd.cc.downfall.view;
 
 import java.awt.*;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class CustomFonts {
     public static Font SoftFont;
