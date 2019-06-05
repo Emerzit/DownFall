@@ -134,7 +134,6 @@ public class PlayerPannelModel extends PannelModel {
         if(System.nanoTime() - startTime > 1000000000 && currentShots > 0){
             currentShots--;
             startTime = System.nanoTime();
-            System.out.println(currentShots);
         }
         pannel.setCurPrimaryShots(currentShots);
         pannel.setMaxPrimaryShots(maxShots);
