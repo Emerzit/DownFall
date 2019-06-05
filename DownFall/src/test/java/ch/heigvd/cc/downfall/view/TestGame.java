@@ -17,19 +17,23 @@ public class TestGame {
     void init() {
         game = new GameFrame();
         game.init();
+        //commencer le jeu
+        game.curState=2;
+        game.initGame();
     }
 
     @Test
     void GameInit() {
-        //test qu'il y a bien 2 joueurs
+        //test qu'il y ait 2 joueurs
         assertEquals(2, game.pannels.size());
+
         assertNotNull(game.gameFrame);
     }
 
     @Test
     void MouvementsJ1() {
         //test de mouvemement des personnages
-        PlayerPannelModel j1Environnement = game.pannels.get(0);
+        PlayerPannelModel j1Environnement = (PlayerPannelModel) game.pannels.get(0);
         PlayerModel j1 = j1Environnement.getPlayer();
         //aller à gauche
         int oldPosX = j1.getPosX();
@@ -64,7 +68,7 @@ public class TestGame {
     @Test
     void MouvementsJ2() {
         //test de mouvemement des personnages
-        PlayerPannelModel j2Environnement = game.pannels.get(0);
+        PlayerPannelModel j2Environnement = (PlayerPannelModel) game.pannels.get(0);
         PlayerModel j2 = j2Environnement.getPlayer();
         //aller à gauche
         int oldPosX = j2.getPosX();

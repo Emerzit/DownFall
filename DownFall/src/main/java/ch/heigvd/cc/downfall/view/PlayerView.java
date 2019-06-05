@@ -33,13 +33,7 @@ public class PlayerView {
     public int gethitboxOffsetX(){
         return hitboxOffsetX;
     }
-    public void sethitboxOffsetX(int x){
-        hitboxOffsetX = x;
-    }
     public int gethitboxOffsetY(){
         return hitboxOffsetY;
-    }
-    public void sethitboxOffsetY(int y){
-        hitboxOffsetY = y;
     }
 }

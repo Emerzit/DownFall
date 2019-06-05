@@ -5,13 +5,14 @@ import ch.heigvd.cc.downfall.view.GameFrame;
 import ch.heigvd.cc.downfall.view.PlatformImg;
 import ch.heigvd.cc.downfall.view.PlayerPanel;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 
 import static java.lang.Math.abs;
 
-public class PlayerPannelModel {
+public class PlayerPannelModel extends PannelModel {
     PlayerPanel pannel;
     Background bg;
     PlayerModel player;
@@ -19,9 +20,9 @@ public class PlayerPannelModel {
     Random rand;
 
     ArrayList<PlatformModel> platforms;
-    ArrayList<CupCakeModel> cupCakesThrow;
-    ArrayList<CupCakeModel> cupCakesReceve;
-    ArrayList<CupCakeModel> cupCakesOther;
+    ArrayList<CupCakeModel> cupCakesThrow;      //cupcakes lancé par le joueur
+    ArrayList<CupCakeModel> cupCakesReceve;     //cupcakes lancé par le joueur adverse à afficher
+    ArrayList<CupCakeModel> cupCakesOther;      //cupcakes lancé par le joueur adverse dans sa zone
 
     public void setCupCakesOther(ArrayList<CupCakeModel> cupCakesOther){
         this.cupCakesOther = cupCakesOther;
@@ -40,7 +41,19 @@ public class PlayerPannelModel {
     private int maxShots = 5;
     private int currentShots = 0;
 
-    public PlayerPannelModel(){
+    private Boolean gameStart = false;
+    private Boolean pause = false;
+
+    public void setPause(Boolean pause){
+        this.pause = pause;
+        pannel.setPause(pause);
+    }
+
+    private Boolean lost = false;
+    public Boolean hasLost(){
+        return lost;
+    }
+    public PlayerPannelModel(String playerName){
 
         cupCakesThrow = new ArrayList<CupCakeModel>();
         cupCakesReceve = new ArrayList<CupCakeModel>();
@@ -50,8 +63,9 @@ public class PlayerPannelModel {
         distBetweenPlatforms = 100;
         yspeed = 1;
         bg = new Background("/Backgrounds/menubg.gif");
-        bg.setVector(0, -(yspeed/4.0));
+        bg.setVector(0, 0);
         pannel = new PlayerPanel();
+        pannel.setPlayerName(playerName);
         pannel.setBg(bg);
         platforms = new ArrayList<PlatformModel>();
         maxPlatformLength = 5;
@@ -90,9 +104,22 @@ public class PlayerPannelModel {
         pannel.setPlatforms(platforms);
         pannel.setCupCakesReceve(cupCakesReceve);
         pannel.setCupCakesThrow(cupCakesThrow);
+        pannel.setGameStart(gameStart);
     }
 
     public void update(){
+        // si pause on ne mets plus à jour l'affichage
+        if(pause){
+            bg.setVector(0,0);
+            return;
+        }
+        pannel.setLivesLeft(player.getLivesLeft());
+        if(player.getLivesLeft()<0){
+            lost = true;
+            return;
+        }
+        if(!gameStart) gameStart = pannel.getGameStart();
+        if(!gameStart) return;
 
         if(player.getPosY() > GameFrame.HEIGHT - player.getImg().getHeight() ){
             player.resetPlayer();
@@ -107,8 +134,9 @@ public class PlayerPannelModel {
         if(System.nanoTime() - startTime > 1000000000 && currentShots > 0){
             currentShots--;
             startTime = System.nanoTime();
-            System.out.println(currentShots);
         }
+        pannel.setCurPrimaryShots(currentShots);
+        pannel.setMaxPrimaryShots(maxShots);
         detectCollision();
         updatePlatforms();
 
@@ -121,9 +149,6 @@ public class PlayerPannelModel {
         }
         player.setSpeedy(yspeed);
         bg.setVector(0, (yspeed/4.0));
-        //pannel.setCupCakesReceve(cupCakesReceve);
-        //pannel.setCupCakesThrow(cupCakesThrow);
-        //draw();
     }
 
     private void destroyCupCakes() {
@@ -218,14 +243,9 @@ public class PlayerPannelModel {
         }
         int y = player.getPosY() - player.getImg().getHeight();
         this.cupCakesThrow.add(new CupCakeModel(player.isGoingRight(),x,y));
-        System.out.println("--> shoot : "+ cupCakesThrow.size()+ " receve : "+cupCakesReceve.size() + " Other : "+ cupCakesOther.size());
     }
-/*
-    public void draw(){
-        pannel.update();
-    }*/
 
-    public PlayerPanel getPlayerPannel(){
+    public JPanel getPannel(){
         return pannel;
     }
 
@@ -239,5 +259,8 @@ public class PlayerPannelModel {
 
     public PlayerModel getPlayer() {
         return player;
+    }
+    public void repaint(){
+        pannel.repaint();
     }
 }

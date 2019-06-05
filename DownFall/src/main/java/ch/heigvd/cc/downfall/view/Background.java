@@ -48,5 +48,14 @@ public class Background {
         if(y > 0){
             g.drawImage(image, (int)x, (int)y- image.getHeight(), null);
         }
+
+        if(x < 0 && y <0){
+            g.drawImage(image, (int)x+image.getWidth(), (int)y+ image.getHeight(), null);
+        }
+
+        if(x > 0 && y >0){
+            g.drawImage(image, (int)x-image.getWidth(), (int)y- image.getHeight(), null);
+        }
+
     }
 }
